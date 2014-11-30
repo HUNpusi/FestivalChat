@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">FestChat</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="local_service_stopped">Game Over! Insert Coin!</string>
+    <string name="message_cannot_be_sent">Nem megy el az üzi</string>
+    <string name="OK">OK</string>
+
+</resources>
