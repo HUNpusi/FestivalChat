@@ -55,8 +55,8 @@ import com.balazspuskas.festchat.types.MessageInfo;
 
 /**
  * This is an example of implementing an application service that runs locally
- * in the same process as the application.  The {@link LocalServiceController}
- * and {@link LocalServiceBinding} classes show how to interact with the
+ * in the same process as the application.  The {@link /*LocalServiceController}
+ * and {@link LocalServiceBinding*/} classes show how to interact with the
  * service.
  *
  * <p>Notice the use of the {@link NotificationManager} when interesting things
@@ -87,7 +87,7 @@ public class IMService extends Service implements IAppManager, IUpdateData {
 	private Timer timer;
 	
 
-	private LocalStorageHandler localstoragehandler; 
+	public static LocalStorageHandler localstoragehandler;
 	
 	private NotificationManager mNM;
 

@@ -67,7 +67,7 @@ public class ChatRoom extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.chatroom_activity);
+        //setContentView(R.layout.chatroom_activity);
 
         android_id = Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID);
 

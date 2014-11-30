@@ -6,9 +6,12 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import android.database.Cursor;
 import android.util.Log;
 import com.balazspuskas.festchat.interfaces.IUpdateData;
+import com.balazspuskas.festchat.services.IMService;
 import com.balazspuskas.festchat.types.MessageInfo;
+import com.balazspuskas.festchat.tools.LocalStorageHandler;
 /*
  * Parses the xml data to FriendInfo array
  * XML Structure 
@@ -28,6 +31,7 @@ public class XMLHandler extends DefaultHandler
 {
 		private String userKey = new String();
 		private IUpdateData updater;
+        private LocalStorageHandler localstoragehandler;
 		
 		public XMLHandler(IUpdateData updater) {
 			super();
@@ -43,16 +47,24 @@ public class XMLHandler extends DefaultHandler
 		
 		public void endDocument() throws SAXException 
 		{
+            int unreadMessagecount = mUnreadMessages.size();
+            IMService.localstoragehandler.get().moveToFirst();
+            int old_msgs = IMService.localstoragehandler.get().getCount();
+
+            if (old_msgs == mUnreadMessages.size()){
+                super.endDocument();
+                return;
+            }
+
+            for (int i =0; i < old_msgs; i++ ){
+                mUnreadMessages.remove(0);
+            }
 
 			MessageInfo[] messages = new MessageInfo[mUnreadMessages.size()];
-			
 
-			
 
-			
-			int unreadMessagecount = mUnreadMessages.size();
 			//Log.i("MessageLOG", "mUnreadMessages="+unreadMessagecount );
-			for (int i = 0; i < unreadMessagecount; i++) 
+			for (int i = 0; i < mUnreadMessages.size(); i++)
 			{
 				messages[i] = mUnreadMessages.get(i);
 				Log.i("MessageLOG", "i="+i );

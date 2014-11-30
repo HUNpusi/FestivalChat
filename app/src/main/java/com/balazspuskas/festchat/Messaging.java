@@ -95,17 +95,17 @@ public class Messaging extends Activity {
 		//dbCursor = localstoragehandler.get(friend.userName, IMService.USERNAME );
         dbCursor = localstoragehandler.get();
 
-//		if (dbCursor.getCount() > 0){
-//		int noOfScorer = 0;
-//		dbCursor.moveToFirst();
-//		    while ((!dbCursor.isAfterLast())&&noOfScorer<dbCursor.getCount())
-//		    {
-//		        noOfScorer++;
-//
-//				this.appendToMessageHistory(dbCursor.getString(2) , dbCursor.getString(3));
-//		        dbCursor.moveToNext();
-//		    }
-//		}
+		if (dbCursor.getCount() > 0){
+		int noOfScorer = 0;
+		dbCursor.moveToFirst();
+		    while ((!dbCursor.isAfterLast())&&noOfScorer<dbCursor.getCount())
+		    {
+		        noOfScorer++;
+
+				this.appendToMessageHistory(dbCursor.getString(1) , dbCursor.getString(2));
+		        dbCursor.moveToNext();
+		    }
+		}
 		localstoragehandler.close();
 		
 //		if (msg != null)
@@ -237,6 +237,7 @@ public class Messaging extends Activity {
 			
 			if (username != null && message != null)
 			{
+                //if (localstoragehandler.get().getCount() <  )
 //				if (friend.userName.equals(username)) {
 					appendToMessageHistory(username, message);
 					localstoragehandler.insert(imService.getAndroid_id(), message);
