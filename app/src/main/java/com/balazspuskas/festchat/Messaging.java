@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -30,6 +31,7 @@ import com.balazspuskas.festchat.services.IMService;
 import com.balazspuskas.festchat.tools.LocalStorageHandler;
 import com.balazspuskas.festchat.types.FriendInfo;
 import com.balazspuskas.festchat.types.MessageInfo;
+import android.database.sqlite.SQLiteOpenHelper;
 
 
 public class Messaging extends Activity {
@@ -90,8 +92,10 @@ public class Messaging extends Activity {
 	//	EditText friendUserName = (EditText) findViewById(R.id.friendUserName);
 	//	friendUserName.setText(friend.userName);
 		
-		
+
 		localstoragehandler = new LocalStorageHandler(this);
+        localstoragehandler.removeAll();
+        localstoragehandler = new LocalStorageHandler(this);
 		//dbCursor = localstoragehandler.get(friend.userName, IMService.USERNAME );
         dbCursor = localstoragehandler.get();
 

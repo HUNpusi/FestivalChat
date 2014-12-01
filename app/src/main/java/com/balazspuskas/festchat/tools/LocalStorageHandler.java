@@ -48,8 +48,19 @@ public class LocalStorageHandler extends SQLiteOpenHelper {
 		Log.w(TAG, "Upgrade der DB von V: "+ oldVersion + " zu V:" + newVersion + "; Alle Daten werden gel�scht!");
 		db.execSQL(TABLE_MESSAGE_DROP);
 		onCreate(db);
-		
+
 	}
+
+    public void removeAll()
+    {
+        // db.delete(String tableName, String whereClause, String[] whereArgs);
+        // If whereClause is null, it will delete all rows.
+        SQLiteDatabase db = getWritableDatabase(); // helper is object extends SQLiteOpenHelper
+        db.delete(TABLE_NAME_MESSAGES,null,null);
+
+    }
+
+
 	
 	public void insert(String sender, String message){
 		long rowId = -1;
