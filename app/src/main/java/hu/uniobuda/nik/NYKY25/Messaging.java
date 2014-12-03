@@ -1,4 +1,4 @@
-package com.balazspuskas.festchat;
+package hu.uniobuda.nik.NYKY25;
 
 
 import java.io.UnsupportedEncodingException;
@@ -15,23 +15,24 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import com.balazspuskas.festchat.interfaces.IAppManager;
-import com.balazspuskas.festchat.services.IMService;
-import com.balazspuskas.festchat.tools.LocalStorageHandler;
-import com.balazspuskas.festchat.types.FriendInfo;
-import com.balazspuskas.festchat.types.MessageInfo;
-import android.database.sqlite.SQLiteOpenHelper;
+
+import hu.uniobuda.nik.NYKY25.interfaces.IAppManager;
+import hu.uniobuda.nik.NYKY25.tools.LocalStorageHandler;
+import hu.uniobuda.nik.NYKY25.types.MessageInfo;
+import hu.uniobuda.nik.NYKY25.R;
+import hu.uniobuda.nik.NYKY25.services.IMService;
 
 
 public class Messaging extends Activity {
@@ -44,13 +45,10 @@ public class Messaging extends Activity {
 	private IAppManager imService;
 	private LocalStorageHandler localstoragehandler;
 	private Cursor dbCursor;
-    //private FriendInfo friend = new FriendInfo();
 
 	private ServiceConnection mConnection = new ServiceConnection() {
       
-		
-		
-		public void onServiceConnected(ComponentName className, IBinder service) {          
+		public void onServiceConnected(ComponentName className, IBinder service) {
             imService = ((IMService.IMBinder)service).getService();
         }
         public void onServiceDisconnected(ComponentName className) {
@@ -63,61 +61,34 @@ public class Messaging extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
-		// TODO Auto-generated method stub
-		super.onCreate(savedInstanceState);	   
-		
-		setContentView(R.layout.chatroom_activity); //messaging_screen);
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.chatroom_activity);
 				
 		messageHistoryText = (EditText) findViewById(R.id.messageHistory);
-		
 		messageText = (EditText) findViewById(R.id.message);
-		
-		messageText.requestFocus();			
-		
+		messageText.requestFocus();
 		sendMessageButton = (Button) findViewById(R.id.sendMessageButton);
-		
-//		Bundle extras = this.getIntent().getExtras();
-//
-//
-//        friend.userName = extras.getString(FriendInfo.USERNAME);
-//		friend.ip = extras.getString(FriendInfo.IP);
-//		friend.port = extras.getString(FriendInfo.PORT);
-//		String msg = extras.getString(MessageInfo.MESSAGETEXT);
-//
-		
-		
-		//setTitle("Messaging with " + friend.userName);
-	
-		
-	//	EditText friendUserName = (EditText) findViewById(R.id.friendUserName);
-	//	friendUserName.setText(friend.userName);
-		
 
+        //localstorage ürítése, hogy a szerverről lekérje az új üzeneteket.
 		localstoragehandler = new LocalStorageHandler(this);
         localstoragehandler.removeAll();
         localstoragehandler = new LocalStorageHandler(this);
-		//dbCursor = localstoragehandler.get(friend.userName, IMService.USERNAME );
-        dbCursor = localstoragehandler.get();
-
-		if (dbCursor.getCount() > 0){
-		int noOfScorer = 0;
-		dbCursor.moveToFirst();
-		    while ((!dbCursor.isAfterLast())&&noOfScorer<dbCursor.getCount())
-		    {
-		        noOfScorer++;
-
-				this.appendToMessageHistory(dbCursor.getString(1) , dbCursor.getString(2));
-		        dbCursor.moveToNext();
-		    }
-		}
-		localstoragehandler.close();
-		
-//		if (msg != null)
-//		{
-//			this.appendToMessageHistory(friend.userName , msg);
-//			((NotificationManager)getSystemService(NOTIFICATION_SERVICE)).cancel((friend.userName+msg).hashCode());
+//        dbCursor = localstoragehandler.get();
+//
+//		if (dbCursor.getCount() > 0){
+//		int noOfScorer = 0;
+//		dbCursor.moveToFirst();
+//		    while ((!dbCursor.isAfterLast())&&noOfScorer<dbCursor.getCount())
+//		    {
+//		        noOfScorer++;
+//
+//				this.appendToMessageHistory(dbCursor.getString(1) , dbCursor.getString(2));
+//		        dbCursor.moveToNext();
+//		    }
 //		}
-		
+//		localstoragehandler.close();
+
+
 		sendMessageButton.setOnClickListener(new OnClickListener(){
 			CharSequence message;
 			Handler handler = new Handler();
@@ -176,6 +147,8 @@ public class Messaging extends Activity {
 				
 	}
 
+
+    //To Do: support package-el kiváltani ezt a depricated-et, DialogFragmentre
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		int message = -1;
@@ -196,7 +169,6 @@ public class Messaging extends Activity {
 			.setMessage(message)
 			.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int whichButton) {
-					/* User clicked OK so do some stuff */
 				}
 			})        
 			.create();
@@ -208,35 +180,64 @@ public class Messaging extends Activity {
 		super.onPause();
 		unregisterReceiver(messageReceiver);
 		unbindService(mConnection);
-		
-
-		
 	}
 
 	@Override
 	protected void onResume() 
-	{		
+	{
+
+        NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(001);
+
 		super.onResume();
 		bindService(new Intent(Messaging.this, IMService.class), mConnection , Context.BIND_AUTO_CREATE);
 				
 		IntentFilter i = new IntentFilter();
 		i.addAction(IMService.TAKE_MESSAGE);
-		
 		registerReceiver(messageReceiver, i);
-		
-
-		
-		
 	}
-	
-	
-	public class  MessageReceiver extends BroadcastReceiver {
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        boolean result = super.onCreateOptionsMenu(menu);
+
+        menu.add(0, Menu.FIRST, 0, R.string.user_name);
+
+        menu.add(0, Menu.FIRST+1, 0, R.string.exit_application);
+
+        return result;
+    }
+
+    @Override
+    public boolean onMenuItemSelected(int featureId, MenuItem item)
+    {
+
+        switch(item.getItemId())
+        {
+            case Menu.FIRST:
+            {
+                //To Do: Ide kéne a változtatható username-et megcsinálni.
+                return true;
+            }
+            case Menu.FIRST+1:
+            {
+                imService.exit();
+                finish();
+                return true;
+            }
+        }
+
+        return super.onMenuItemSelected(featureId, item);
+    }
+
+
+    public class  MessageReceiver extends BroadcastReceiver {
 
 		@Override
 		public void onReceive(Context context, Intent intent) 
 		{		
 			Bundle extra = intent.getExtras();
-			String username = extra.getString(MessageInfo.USERID);			
+			String username = extra.getString(MessageInfo.USERID);
 			String message = extra.getString(MessageInfo.MESSAGETEXT);
 			
 			if (username != null && message != null)
@@ -278,6 +279,9 @@ public class Messaging extends Activity {
 	    if (dbCursor != null) {
 	    	dbCursor.close();
 	    }
+
+        imService.exit();
+        finish();
 	}
 	
 

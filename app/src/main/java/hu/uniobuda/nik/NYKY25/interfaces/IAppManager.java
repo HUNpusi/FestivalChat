@@ -1,4 +1,4 @@
-package com.balazspuskas.festchat.interfaces;
+package hu.uniobuda.nik.NYKY25.interfaces;
 
 import java.io.UnsupportedEncodingException;
 

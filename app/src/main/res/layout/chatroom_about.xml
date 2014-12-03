@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/welcome"
+        android:layout_width="match_parent"
+
+        android:gravity="center"
+        android:layout_weight="0.5"
+        android:text="Welcome To the Festival Chat application! \n This is software is in a very alpha stage. \n I Hope you will like it."
+        android:layout_height="match_parent" />
+
+    <Button
+        android:id="@+id/welcome_btn"
+        android:layout_above="@id/welcome"
+        android:gravity="center"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="0.5"
+        android:text="Start"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="200dp"
+        android:layout_marginLeft="100dp"
+        android:layout_marginRight="100dp"
+        />
+
+
+</LinearLayout>

@@ -1,5 +1,5 @@
-package com.balazspuskas.festchat.interfaces;
-import com.balazspuskas.festchat.types.MessageInfo;
+package hu.uniobuda.nik.NYKY25.interfaces;
+import hu.uniobuda.nik.NYKY25.types.MessageInfo;
 
 
 public interface IUpdateData {

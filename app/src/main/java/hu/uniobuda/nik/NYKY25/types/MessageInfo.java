@@ -1,4 +1,4 @@
-package com.balazspuskas.festchat.types;
+package hu.uniobuda.nik.NYKY25.types;
 
 
 public class MessageInfo {

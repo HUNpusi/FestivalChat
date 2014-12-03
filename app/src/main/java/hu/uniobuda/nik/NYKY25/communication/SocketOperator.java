@@ -1,4 +1,4 @@
-package com.balazspuskas.festchat.communication;
+package hu.uniobuda.nik.NYKY25.communication;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,23 +13,19 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import android.util.Log;
-import com.balazspuskas.festchat.interfaces.IAppManager;
-import com.balazspuskas.festchat.interfaces.ISocketOperator;
+//import android.util.Log;
+
+import hu.uniobuda.nik.NYKY25.interfaces.IAppManager;
+import hu.uniobuda.nik.NYKY25.interfaces.ISocketOperator;
 
 
 public class SocketOperator implements ISocketOperator
 {
-	private static final String AUTHENTICATION_SERVER_ADDRESS = "http://balazspuskas.com"; //TODO change to your WebAPI Address
-	
+	private static final String AUTHENTICATION_SERVER_ADDRESS = "http://balazspuskas.com"; //Webszerver címe
 	private int listeningPort = 0;
-	
 	private static final String HTTP_REQUEST_FAILED = null;
-	
 	private HashMap<InetAddress, Socket> sockets = new HashMap<InetAddress, Socket>();
-	
 	private ServerSocket serverSocket = null;
-
 	private boolean listening;
 
 	private class ReceiveConnection extends Thread {
@@ -37,19 +33,13 @@ public class SocketOperator implements ISocketOperator
 
 		public ReceiveConnection(Socket socket) 
 		{
-
-
 			this.clientSocket = socket;
 			SocketOperator.this.sockets.put(socket.getInetAddress(), socket);
-
 		}
 		
 		@Override
 		public void run() {
-
-
 			 try {
-	//			PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
 				BufferedReader in = new BufferedReader(
 						    new InputStreamReader(
 						    		clientSocket.getInputStream()));
@@ -72,12 +62,12 @@ public class SocketOperator implements ISocketOperator
 				 }		
 				
 			} catch (IOException e) {
-				Log.e("ReceiveConnection.run: when receiving connection ","");
+				//Log.e("ReceiveConnection.run: when receiving connection ","");
 			}
 		}	
 	}
 
-	public SocketOperator(IAppManager appManager) {	
+	public SocketOperator(IAppManager appManager) {
 	}
 	
 	
@@ -117,21 +107,13 @@ public class SocketOperator implements ISocketOperator
 		if (result.length() == 0) {
 			result = HTTP_REQUEST_FAILED;
 		}
-		
+
 		return result;
-		
-	
 	}
-
-
-
-
 
 
 	public int startListening(int portNo) 
 	{
-
-
 		listening = true;
 		
 		try {
@@ -139,14 +121,12 @@ public class SocketOperator implements ISocketOperator
 			this.listeningPort = portNo;
 		} catch (IOException e) {			
 			
-			//e.printStackTrace();
+			e.printStackTrace();
 			this.listeningPort = 0;
 			return 0;
 		}
 
 		while (listening) {
-
-
 			try {
 				new ReceiveConnection(serverSocket.accept()).start();
 			} catch (IOException e) {
@@ -158,7 +138,7 @@ public class SocketOperator implements ISocketOperator
 		try {
 			serverSocket.close();
 		} catch (IOException e) {			
-			Log.e("Exception server socket", "Exception when closing server socket");
+			//Log.e("Exception server socket", "Exception when closing server socket");
 			return 3;
 		}
 		
@@ -182,8 +162,8 @@ public class SocketOperator implements ISocketOperator
 				socket.shutdownInput();
 				socket.shutdownOutput();
 				socket.close();
-			} catch (IOException e) 
-			{				
+			} catch (IOException e){
+                e.printStackTrace();
 			}		
 		}
 		

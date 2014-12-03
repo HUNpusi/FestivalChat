@@ -1,4 +1,4 @@
-package com.balazspuskas.festchat.tools;
+package hu.uniobuda.nik.NYKY25.tools;
 
 import java.util.Vector;
 
@@ -6,12 +6,11 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import android.database.Cursor;
 import android.util.Log;
-import com.balazspuskas.festchat.interfaces.IUpdateData;
-import com.balazspuskas.festchat.services.IMService;
-import com.balazspuskas.festchat.types.MessageInfo;
-import com.balazspuskas.festchat.tools.LocalStorageHandler;
+
+import hu.uniobuda.nik.NYKY25.types.MessageInfo;
+import hu.uniobuda.nik.NYKY25.interfaces.IUpdateData;
+import hu.uniobuda.nik.NYKY25.services.IMService;
 /*
  * Parses the xml data to FriendInfo array
  * XML Structure 
@@ -67,7 +66,7 @@ public class XMLHandler extends DefaultHandler
 			for (int i = 0; i < mUnreadMessages.size(); i++)
 			{
 				messages[i] = mUnreadMessages.get(i);
-				Log.i("MessageLOG", "i="+i );
+				//Log.i("MessageLOG", "i="+i );
 			}
 			
 			this.updater.updateData(messages, userKey);
@@ -82,7 +81,7 @@ public class XMLHandler extends DefaultHandler
 				message.userid = attributes.getValue(MessageInfo.USERID);
 				message.sendt = attributes.getValue(MessageInfo.SENDT);
 				message.messagetext = attributes.getValue(MessageInfo.MESSAGETEXT);
-				Log.i("MessageLOG", message.userid + message.sendt + message.messagetext);
+				//Log.i("MessageLOG", message.userid + message.sendt + message.messagetext);
 				mUnreadMessages.add(message);
 			}
 			super.startElement(uri, localName, name, attributes);

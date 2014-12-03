@@ -1,4 +1,4 @@
-package com.balazspuskas.festchat.tools;
+package hu.uniobuda.nik.NYKY25.tools;
 
 import android.content.ContentValues;
 import android.content.Context;

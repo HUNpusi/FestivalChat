@@ -1,22 +1,15 @@
-package com.balazspuskas.festchat.tools;
+package hu.uniobuda.nik.NYKY25.tools;
 
-import com.balazspuskas.festchat.types.MessageInfo;
+import hu.uniobuda.nik.NYKY25.types.MessageInfo;
 
-/*
- * This class can store friendInfo and check userkey and username combination 
- * according to its stored data
- */
 public class MessageController 
 {
-	
 	private static MessageInfo[] messagesInfo = null;
 	
 	public static void setMessagesInfo(MessageInfo[] messageInfo)
 	{
 		MessageController.messagesInfo = messageInfo;
 	}
-	
-	
 	
 	public static MessageInfo checkMessage(String username)
 	{
@@ -34,11 +27,7 @@ public class MessageController
 		return result;
 	}
 	
-	
-
-
-
-	public static MessageInfo getMessageInfo(String username) 
+	public static MessageInfo getMessageInfo(String username)
 	{
 		MessageInfo result = null;
 		if (messagesInfo != null) 
@@ -53,19 +42,8 @@ public class MessageController
 		return result;
 	}
 
-
-
-
-
-
 	public static MessageInfo[] getMessagesInfo() {
 		return messagesInfo;
 	}
-
-
-
-	
-	
-	
 
 }
