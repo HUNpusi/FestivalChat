@@ -35,6 +35,9 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Binder;
 import android.os.IBinder;
@@ -213,6 +216,27 @@ public class IMService extends Service implements IAppManager, IUpdateData {
 		return result;
 	}
 
+
+    public String updateLocation(String androidID) throws UnsupportedEncodingException
+    {
+//        LocationListener locationListenerNetwork = new LocationListener() {
+//            public void onLocationChanged(Location location) {
+//                timer1.cancel();
+//                locationResult.gotLocation(location);
+//                lm.removeUpdates(this);
+//                lm.removeUpdates(locationListenerGps);
+//            }
+//            public void onProviderDisabled(String provider) {}
+//            public void onProviderEnabled(String provider) {}
+//            public void onStatusChanged(String provider, int status, Bundle extras) {}
+//        };
+//
+//        LocationManager lm;
+//        if(lm==null)
+//            lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+    }
+
+
 	public void messageReceived(String android_id, String message)
 	{				
 		Intent i = new Intent(TAKE_MESSAGE);
@@ -233,6 +257,16 @@ public class IMService extends Service implements IAppManager, IUpdateData {
 		
 		return params;		
 	}
+
+    private String getUpdateLocationParams(String android_id, Location loc ) throws UnsupportedEncodingException
+    {
+        String params = "action="  + URLEncoder.encode("locationUpdate","UTF-8")+
+                "&android_id=" + URLEncoder.encode(android_id,"UTF-8") +
+                "&loc_lat=" + URLEncoder.encode(String.valueOf(loc.getLatitude()),"UTF-8") +
+                "&loc_long="    + URLEncoder.encode(String.valueOf(loc.getLongitude()), "UTF-8");
+
+        return params;
+    }
 
 	public void setUserKey(String value) 
 	{		

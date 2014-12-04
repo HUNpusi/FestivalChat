@@ -1,4 +1,4 @@
--- phpMyAdmin SQL Dump
+﻿-- phpMyAdmin SQL Dump
 -- version 3.5.2.2
 -- http://www.phpmyadmin.net
 --
@@ -50,6 +50,8 @@ CREATE TABLE IF NOT EXISTS `users` (
   `authenticationTime` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `IP` varchar(45) NOT NULL DEFAULT '',
   `port` int(10) unsigned NOT NULL DEFAULT '0',
+  `loc_long` int(15) unsigned NOT NULL DEFAULT '0',
+  `loc_lat` int(15) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`Id`),
   UNIQUE KEY `Index_2` (`android_id`),
   KEY `Index_3` (`authenticationTime`)
