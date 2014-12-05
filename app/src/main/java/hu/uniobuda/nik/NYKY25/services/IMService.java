@@ -40,7 +40,9 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Looper;
 import android.provider.Settings;
 //import android.util.Log;
 import android.widget.Toast;
@@ -85,7 +87,11 @@ public class IMService extends Service implements IAppManager, IUpdateData {
 	public static LocalStorageHandler localstoragehandler;
 	private NotificationManager mNM;
 
-	public class IMBinder extends Binder {
+//    LocationManager locationManager =
+//            (LocationManager)getSystemService(LOCATION_SERVICE);
+
+
+    public class IMBinder extends Binder {
 		public IAppManager getService() {
 			return IMService.this;
 		}
@@ -160,7 +166,14 @@ public class IMService extends Service implements IAppManager, IUpdateData {
 	}
 
 	public String sendMessage(String  android_id, String message) throws UnsupportedEncodingException
-	{			
+	{
+    try {
+        updateLocation();
+    } catch (UnsupportedEncodingException e) {
+        e.printStackTrace();
+    }
+
+
 		String params = "android_id="+ URLEncoder.encode(this.android_id,"UTF-8") +
 						"&message="+ URLEncoder.encode(message,"UTF-8") +
 						"&action="  + URLEncoder.encode("sendMessage","UTF-8")+
@@ -216,24 +229,50 @@ public class IMService extends Service implements IAppManager, IUpdateData {
 		return result;
 	}
 
+    LocationListener locationListenerNetwork = new LocationListener() {
+        public void onLocationChanged(Location location) {
+            try {
+                Toast.makeText(IMService.this, "kezdődik a cumi",Toast.LENGTH_LONG).show();
+                getUpdateLocationParams(location);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+        public void onProviderDisabled(String provider) {}
+        public void onProviderEnabled(String provider) {}
+        public void onStatusChanged(String provider,int status, Bundle extras) {}
+    };
 
-    public String updateLocation(String androidID) throws UnsupportedEncodingException
+    LocationManager lm;
+
+    public void updateLocation() throws UnsupportedEncodingException
     {
-//        LocationListener locationListenerNetwork = new LocationListener() {
-//            public void onLocationChanged(Location location) {
-//                timer1.cancel();
-//                locationResult.gotLocation(location);
-//                lm.removeUpdates(this);
-//                lm.removeUpdates(locationListenerGps);
-//            }
-//            public void onProviderDisabled(String provider) {}
-//            public void onProviderEnabled(String provider) {}
-//            public void onStatusChanged(String provider, int status, Bundle extras) {}
-//        };
-//
-//        LocationManager lm;
-//        if(lm==null)
-//            lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        if(lm==null)
+            lm = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+
+        Thread thread = new Thread()
+        {
+            @Override
+            public void run() {
+
+                Looper.prepare();
+
+                lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,1000, 0, locationListenerNetwork);
+                try {
+                    getUpdateLocationParams(lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER));
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
+                Looper.loop();
+
+
+
+
+            }
+        };
+        thread.start();
     }
 
 
@@ -247,7 +286,9 @@ public class IMService extends Service implements IAppManager, IUpdateData {
 
         showNotification();
 
-	}  
+
+
+    }
 	
 	private String getAuthenticateUserParams(String android_id) throws UnsupportedEncodingException
 	{			
@@ -258,14 +299,16 @@ public class IMService extends Service implements IAppManager, IUpdateData {
 		return params;		
 	}
 
-    private String getUpdateLocationParams(String android_id, Location loc ) throws UnsupportedEncodingException
+    private String getUpdateLocationParams(Location loc) throws UnsupportedEncodingException
     {
+//        Toast.makeText(this, String.valueOf(loc.getLatitude()),Toast.LENGTH_LONG).show();
+//        Toast.makeText(this, String.valueOf(loc.getLongitude()),Toast.LENGTH_LONG).show();
         String params = "action="  + URLEncoder.encode("locationUpdate","UTF-8")+
-                "&android_id=" + URLEncoder.encode(android_id,"UTF-8") +
-                "&loc_lat=" + URLEncoder.encode(String.valueOf(loc.getLatitude()),"UTF-8") +
-                "&loc_long="    + URLEncoder.encode(String.valueOf(loc.getLongitude()), "UTF-8");
+                "&android_id=" + URLEncoder.encode(Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID),"UTF-8") +
+                "&loc_lat=" + URLEncoder.encode(String.valueOf(loc.getLatitude()*10000000),"UTF-8") +
+                "&loc_long="    + URLEncoder.encode(String.valueOf(loc.getLongitude()*10000000), "UTF-8");
 
-        return params;
+        return socketOperator.sendHttpRequest(params);
     }
 
 	public void setUserKey(String value) 

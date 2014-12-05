@@ -28,7 +28,8 @@ $username = (isset($_REQUEST['username']) && count($_REQUEST['username']) > 0)
 $android_id = isset($_REQUEST['android_id']) ? $_REQUEST['android_id'] : NULL;
 $password = isset($_REQUEST['password']) ? md5($_REQUEST['password']) : NULL;
 $port = isset($_REQUEST['port']) ? $_REQUEST['port'] : NULL;
-$loc = isset($_REQUEST['loc']) ? $_REQUEST['loc'] : NULL;
+$loc_lat = isset($_REQUEST['loc_lat']) ? $_REQUEST['loc_lat'] : NULL;
+$loc_long = isset($_REQUEST['loc_long']) ? $_REQUEST['loc_long'] : NULL;
 
 $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : NULL;
 if ($action == "testWebAPI")
@@ -191,7 +192,8 @@ switch($action)
 	
 	case "locationUpdate":
 			$android_id = $_REQUEST['android_id'];
-			$loc = $_REQUEST['loc'];
+			$loc_lat = $_REQUEST['loc_lat'];
+			$loc_long = $_REQUEST['loc_long'];
 			$sql22= "select * from users where android_id = '".$android_id."' limit 1";
 			$out = NULL;
 			if ($result22 = $db->query($sql22))
@@ -202,7 +204,8 @@ switch($action)
 					$sql22 = "update users set authenticationTime = NOW(),
 						IP = '".$_SERVER["REMOTE_ADDR"]."',
 						port = 15145,
-						loc = '".$loc."'
+						loc_lat = '".$loc_lat."',
+						loc_long = '".$loc_long."'
 						where Id= ".$row22->Id."
 						limit 1";
 					if ($db->query($sql22))	
