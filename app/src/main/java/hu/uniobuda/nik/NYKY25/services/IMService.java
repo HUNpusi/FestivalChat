@@ -322,7 +322,13 @@ public class IMService extends Service implements IAppManager, IUpdateData {
 	}
 
 	public boolean isNetworkConnected() {
-		return conManager.getActiveNetworkInfo().isConnected();
+        try {
+            return conManager.getActiveNetworkInfo().isConnected();
+        }
+        catch (Exception e) {
+            return false;
+        }
+
 	}
 	
 	public boolean isUserAuthenticated(){

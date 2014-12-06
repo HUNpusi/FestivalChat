@@ -1,6 +1,7 @@
 package hu.uniobuda.nik.NYKY25;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -85,12 +86,17 @@ public class ChatRoom extends Activity {
 
 
                 if (imService == null) {
-                    showDialog(NOT_CONNECTED_TO_SERVICE);
+                    Toast.makeText(ChatRoom.this,"Service kapcsolati hiba!!",
+                            Toast.LENGTH_SHORT).show();
+
+                    //showDialog(NOT_CONNECTED_TO_SERVICE);
                     return;
                 }
                 else if (imService.isNetworkConnected() == false)
                 {
-                    showDialog(NOT_CONNECTED_TO_NETWORK);
+                    Toast.makeText(ChatRoom.this, "Nincs hálózati kapcsolat!!",
+                            Toast.LENGTH_SHORT).show();
+                   // showDialog(NOT_CONNECTED_TO_NETWORK);
 
                 }
                 else
@@ -110,11 +116,7 @@ public class ChatRoom extends Activity {
 								/*
 								 * Authentikáció hiba
 								 */
-                                handler.post(new Runnable(){
-                                    public void run() {
-                                        showDialog(MAKE_SURE_USERNAME_AND_PASSWORD_CORRECT);
-                                    }
-                                });
+
 
                             }
                             else {
