@@ -201,9 +201,9 @@ public class Messaging extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         boolean result = super.onCreateOptionsMenu(menu);
 
-        menu.add(0, Menu.FIRST, 0, R.string.user_name);
+        menu.add(0, Menu.FIRST, 0, R.string.exit_application);
 
-        menu.add(0, Menu.FIRST+1, 0, R.string.exit_application);
+        //menu.add(0, Menu.FIRST+1, 0, R.string.user_name );
 
         return result;
     }
@@ -216,15 +216,16 @@ public class Messaging extends Activity {
         {
             case Menu.FIRST:
             {
-                //To Do: Ide kéne a változtatható username-et megcsinálni.
-                return true;
-            }
-            case Menu.FIRST+1:
-            {
                 imService.exit();
                 finish();
+
                 return true;
             }
+//            case Menu.FIRST+1:
+//            {
+//                //To Do: Ide kéne a változtatható username-et megcsinálni.
+//                return true;
+//            }
         }
 
         return super.onMenuItemSelected(featureId, item);

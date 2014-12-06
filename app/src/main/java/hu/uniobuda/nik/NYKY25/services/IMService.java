@@ -45,6 +45,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.provider.Settings;
 //import android.util.Log;
+import android.util.Log;
 import android.widget.Toast;
 
 
@@ -167,17 +168,29 @@ public class IMService extends Service implements IAppManager, IUpdateData {
 
 	public String sendMessage(String  android_id, String message) throws UnsupportedEncodingException
 	{
+        int loc_lat=0;
+        int loc_long=0;
     try {
         updateLocation();
+        if(lm==null)
+            lm = (LocationManager) getSystemService(LOCATION_SERVICE);
+        loc_lat = (int)(lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER).getLatitude()*10000000);
+        loc_long = (int)(lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER).getLongitude()*10000000);
+
     } catch (UnsupportedEncodingException e) {
+        Log.w("sendMessage","Error in thread");
+
         e.printStackTrace();
     }
 
 
 		String params = "android_id="+ URLEncoder.encode(this.android_id,"UTF-8") +
 						"&message="+ URLEncoder.encode(message,"UTF-8") +
+                        "&loc_lat="+ URLEncoder.encode(String.valueOf(loc_lat),"UTF-8") +
+                        "&loc_long="+ URLEncoder.encode(String.valueOf(loc_long),"UTF-8") +
 						"&action="  + URLEncoder.encode("sendMessage","UTF-8")+
-						"&";		
+						"&";
+        Log.w(String.valueOf(loc_lat),String.valueOf(loc_long));
 		return socketOperator.sendHttpRequest(params);
 	}
 
@@ -211,11 +224,10 @@ public class IMService extends Service implements IAppManager, IUpdateData {
 			{			
 				public void run() 
 				{
-					try {					
+					try {
 						Intent i2 = new Intent(MESSAGE_LIST_UPDATED);
 						String tmp2 = IMService.this.getMessageList();
-
-						if (tmp2 != null) {
+                        if (tmp2 != null) {
 							i2.putExtra("messageList", tmp2);
 							sendBroadcast(i2);	
 						}
@@ -229,10 +241,11 @@ public class IMService extends Service implements IAppManager, IUpdateData {
 		return result;
 	}
 
+
     LocationListener locationListenerNetwork = new LocationListener() {
         public void onLocationChanged(Location location) {
             try {
-                Toast.makeText(IMService.this, "kezdődik a cumi",Toast.LENGTH_LONG).show();
+                //Toast.makeText(IMService.this, "onLocationChanged",Toast.LENGTH_LONG).show();
                 getUpdateLocationParams(location);
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
@@ -247,8 +260,7 @@ public class IMService extends Service implements IAppManager, IUpdateData {
 
     public void updateLocation() throws UnsupportedEncodingException
     {
-        if(lm==null)
-            lm = (LocationManager) getSystemService(LOCATION_SERVICE);
+
 
 
         Thread thread = new Thread()
@@ -258,18 +270,16 @@ public class IMService extends Service implements IAppManager, IUpdateData {
 
                 Looper.prepare();
 
+                if(lm==null)
+                    lm = (LocationManager) getSystemService(LOCATION_SERVICE);
                 lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,1000, 0, locationListenerNetwork);
                 try {
                     getUpdateLocationParams(lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER));
                 } catch (UnsupportedEncodingException e) {
+                    //Log.w("updateLocation","Error in thread");
                     e.printStackTrace();
                 }
-
                 Looper.loop();
-
-
-
-
             }
         };
         thread.start();
@@ -283,11 +293,7 @@ public class IMService extends Service implements IAppManager, IUpdateData {
         i.putExtra(MessageInfo.USERID, android_id);
         i.putExtra(MessageInfo.MESSAGETEXT, message);
         sendBroadcast(i);
-
         showNotification();
-
-
-
     }
 	
 	private String getAuthenticateUserParams(String android_id) throws UnsupportedEncodingException

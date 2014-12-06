@@ -32,6 +32,8 @@ CREATE TABLE IF NOT EXISTS `messages` (
   `android_id` varchar(45) NOT NULL DEFAULT '',
   `sentdt` datetime NOT NULL,
   `messagetext` longtext CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `loc_long` int(15) unsigned NOT NULL DEFAULT '0',
+  `loc_lat` int(15) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `id` (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=22 ;

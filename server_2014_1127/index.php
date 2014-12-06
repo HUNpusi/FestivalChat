@@ -147,9 +147,11 @@ switch($action)
 	break;
 	case "sendMessage":
 			 $message = $_REQUEST['message'];	
+			 $loc_lat = $_REQUEST['loc_lat'];
+			$loc_long = $_REQUEST['loc_long'];
 				
-					$sql22 = "INSERT INTO messages (android_id, sentdt, messagetext) 
-					VALUES ('".$android_id."','".DATE("Y-m-d H:i")."', '".$message."');";						
+					$sql22 = "INSERT INTO messages (android_id, sentdt, messagetext, loc_lat,loc_long) 
+					VALUES ('".$android_id."','".DATE("Y-m-d H:i")."', '".$message."', '".$loc_lat."', '".$loc_long."');";						
 						 					
 			 		error_log("$sql22", 3 , "error_log");
 					if ($db->query($sql22))	
