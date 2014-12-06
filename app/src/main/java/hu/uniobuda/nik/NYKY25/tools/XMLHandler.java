@@ -6,7 +6,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import android.util.Log;
+//import android.util.Log;
 
 import hu.uniobuda.nik.NYKY25.types.MessageInfo;
 import hu.uniobuda.nik.NYKY25.interfaces.IUpdateData;
@@ -43,35 +43,61 @@ public class XMLHandler extends DefaultHandler
 		
 		private Vector<MessageInfo> mUnreadMessages = new Vector<MessageInfo>();
 
-		
-		public void endDocument() throws SAXException 
+
+
+    ////Működő metódus egy táblára, lokalizáció nélkül.
+//		public void endDocument() throws SAXException
+//		{
+//            int unreadMessagecount = mUnreadMessages.size();
+//            IMService.localstoragehandler.get().moveToFirst();
+//            int old_msgs = IMService.localstoragehandler.get().getCount();
+//
+//            if (old_msgs == mUnreadMessages.size()){
+//                super.endDocument();
+//                return;
+//            }
+//
+//            for (int i =0; i < old_msgs; i++ ){
+//                mUnreadMessages.remove(0);
+//            }
+//
+//			MessageInfo[] messages = new MessageInfo[mUnreadMessages.size()];
+//
+//
+//			//Log.i("MessageLOG", "mUnreadMessages="+unreadMessagecount );
+//			for (int i = 0; i < mUnreadMessages.size(); i++)
+//			{
+//				messages[i] = mUnreadMessages.get(i);
+//				//Log.i("MessageLOG", "i="+i );
+//			}
+//
+//			this.updater.updateData(messages, userKey);
+//			super.endDocument();
+//		}
+
+
+    ////Átalakított metódus táblában kereséssel.
+    	public void endDocument() throws SAXException
 		{
-            int unreadMessagecount = mUnreadMessages.size();
+
             IMService.localstoragehandler.get().moveToFirst();
-            int old_msgs = IMService.localstoragehandler.get().getCount();
-
-            if (old_msgs == mUnreadMessages.size()){
-                super.endDocument();
-                return;
-            }
-
-            for (int i =0; i < old_msgs; i++ ){
-                mUnreadMessages.remove(0);
-            }
-
-			MessageInfo[] messages = new MessageInfo[mUnreadMessages.size()];
 
 
-			//Log.i("MessageLOG", "mUnreadMessages="+unreadMessagecount );
-			for (int i = 0; i < mUnreadMessages.size(); i++)
-			{
-				messages[i] = mUnreadMessages.get(i);
-				//Log.i("MessageLOG", "i="+i );
-			}
-			
+
+            IMService.localstoragehandler.kulonbseg(mUnreadMessages);
+			MessageInfo[] messages = IMService.localstoragehandler.kulonbseg(mUnreadMessages).toArray(new MessageInfo[IMService.localstoragehandler.kulonbseg(mUnreadMessages).size()]);
+
+
+            //Log.i("MessageLOG", "mUnreadMessages="+unreadMessagecount );
+//			for (int i = 0; i < mUnreadMessages.size(); i++)
+//			{
+//				messages[i] = mUnreadMessages.get(i);
+//				//Log.i("MessageLOG", "i="+i );
+//			}
+
 			this.updater.updateData(messages, userKey);
 			super.endDocument();
-		}		
+		}
 		
 		public void startElement(String uri, String localName, String name,
 				Attributes attributes) throws SAXException 

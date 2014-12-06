@@ -8,6 +8,10 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.Vector;
+
+import hu.uniobuda.nik.NYKY25.types.MessageInfo;
+
 public class LocalStorageHandler extends SQLiteOpenHelper {
 
 	private static final String TAG = LocalStorageHandler.class.getSimpleName();
@@ -97,6 +101,30 @@ public class LocalStorageHandler extends SQLiteOpenHelper {
         return db.rawQuery(SELECT_QUERY,null);
 
 
+    }
+
+    //Select query, hogy a kapott rekordok benne vannak-e a belső táblában.
+    //Erősen erőforrás pazarló megoldás, de működik. Jövőben javítani kell.
+    public Vector<MessageInfo> kulonbseg(Vector<MessageInfo> be_list){
+        Vector<MessageInfo> ki_list = new Vector<MessageInfo>();
+
+        SQLiteDatabase db = getWritableDatabase();
+        MessageInfo[] tomb = be_list.toArray(new MessageInfo[be_list.size()]);
+        for (int i=0;i < be_list.size();i++) {
+            String SELECT_QUERY = "SELECT _id FROM " + TABLE_NAME_MESSAGES +" WHERE ("+MESSAGE_SENDER+" = '"+tomb[i].userid+"' and "+MESSAGE_MESSAGE+" = '"+tomb[i].messagetext+"')";
+            if (db.rawQuery(SELECT_QUERY,null).getCount() <= 0 ){
+                MessageInfo msg_out = new MessageInfo();
+                msg_out.userid = tomb[i].userid;
+                msg_out.messagetext=tomb[i].messagetext;
+                msg_out.sendt = tomb[i].sendt;
+                //Log.w("User_ID",msg_out.userid);
+                ki_list.add(msg_out);
+            }
+            //Log.w("db.rawQuery", String.valueOf(i));
+
+        }
+
+        return ki_list;
     }
 
 

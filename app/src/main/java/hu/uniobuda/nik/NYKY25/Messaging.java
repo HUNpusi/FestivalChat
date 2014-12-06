@@ -246,7 +246,7 @@ public class Messaging extends Activity {
                 //if (localstoragehandler.get().getCount() <  )
 //				if (friend.userName.equals(username)) {
 					appendToMessageHistory(username, message);
-					localstoragehandler.insert(imService.getAndroid_id(), message);
+					localstoragehandler.insert(username, message);
 					
 //				}
 //				else {
